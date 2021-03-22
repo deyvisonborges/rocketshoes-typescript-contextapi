@@ -1,7 +1,7 @@
-import { createContext, ReactNode, useContext, useState } from 'react';
-import { toast } from 'react-toastify';
-import { api } from '../services/api';
-import { Product, Stock } from '../types';
+import { createContext, ReactNode, useContext, useState } from "react";
+import { toast } from "react-toastify";
+import { api } from "../services/api";
+import { Product, Stock } from "../types";
 
 interface CartProviderProps {
   children: ReactNode;
@@ -14,7 +14,7 @@ interface UpdateProductAmount {
 
 interface CartContextData {
   cart: Product[];
-  addProduct: (productId: number) => Promise<void>;
+  addProduct: (productId: number, product: Product) => Promise<void>;
   removeProduct: (productId: number) => void;
   updateProductAmount: ({ productId, amount }: UpdateProductAmount) => void;
 }
@@ -23,20 +23,20 @@ const CartContext = createContext<CartContextData>({} as CartContextData);
 
 export function CartProvider({ children }: CartProviderProps): JSX.Element {
   const [cart, setCart] = useState<Product[]>(() => {
-    // const storagedCart = Buscar dados do localStorage
-
-    // if (storagedCart) {
-    //   return JSON.parse(storagedCart);
-    // }
-
+    let storagedCart;
+    if (storagedCart) JSON.parse(storagedCart);
     return [];
   });
 
-  const addProduct = async (productId: number) => {
+  const addProduct = async (productId: number, product: Product) => {
     try {
-      // TODO
-    } catch {
-      // TODO
+      setCart({
+        ...cart,
+        ...product,
+      });
+      localStorage.setItem("@RocketShoes:cart", JSON.stringify(cart));
+    } catch (err) {
+      console.log(err);
     }
   };
 
