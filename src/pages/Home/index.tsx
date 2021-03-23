@@ -4,6 +4,7 @@ import { MdAddShoppingCart } from "react-icons/md";
 import { ProductList } from "./styles";
 import { api } from "../../services/api";
 import { useCart } from "../../hooks/useCart";
+import { log } from "node:console";
 
 interface Product {
   id: number;
@@ -24,13 +25,10 @@ const Home = (): JSX.Element => {
   const [products, setProducts] = useState<ProductFormatted[]>([]);
   const { addProduct, cart } = useCart();
 
-  const cartItemsAmount = cart.reduce(
-    (preval, product) => {
-      return preval.amount + product.amount, 0
-    } : {} as cartItemsAmount
-  );
-
-  console.log(cartItemsAmount);
+  const cartItemsAmount = cart.reduce((sumAmount, product) => {
+    sumAmount[product.id] += product.amount;
+    return sumAmount;
+  }, {} as CartItemsAmount);
 
   useEffect(() => {
     async function loadProducts() {
@@ -43,7 +41,7 @@ const Home = (): JSX.Element => {
   function handleAddProduct(id: number, product: Product) {
     addProduct(id, {
       ...product,
-      amount: 1,
+      amount: 0,
     });
   }
 
@@ -62,7 +60,7 @@ const Home = (): JSX.Element => {
             <div data-testid="cart-product-quantity">
               <MdAddShoppingCart size={16} color="#FFF" />
             </div>
-
+            {cartItemsAmount[product.id] || 0}
             <span>ADICIONAR AO CARRINHO</span>
           </button>
         </li>
