@@ -67,12 +67,13 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
     amount,
   }: UpdateProductAmount) => {
     try {
+      if (amount < 1) {
+        toast.error('Erro na alteração de quantidade do produto');
+        return;
+      }
+
       const { data } = await api.get<Stock>(`stock/${productId}`);
-      if (amount > data.amount || amount < 1) {
-        // Sem essa logica, ele dá erro no carrinho
-        // permitindo passar mais um valor alem do que foi permitido
-        // setCart(cart);
-        // localStorage.setItem('@RocketShoes:cart', JSON.stringify(cart));
+      if (amount > data.amount) {
         toast.error('Quantidade solicitada fora de estoque');
         return;
       }
