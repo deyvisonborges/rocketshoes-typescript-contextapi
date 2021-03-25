@@ -38,6 +38,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
           productId,
           amount: product.amount + 1,
         });
+        return
       }
 
       const updatedCart = [...cart, { ...data, amount: 1 }];
@@ -79,7 +80,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
       }
 
       let updatedCart = [...cart].filter((product) => {
-        if (product.id === productId) product.amount = amount++;
+        if (product.id === productId) product.amount = product.amount + 1;
         return product;
       });
       localStorage.setItem('@RocketShoes:cart', JSON.stringify(updatedCart));
